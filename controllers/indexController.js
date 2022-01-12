@@ -40,3 +40,8 @@ exports.sign_up_post = (req, res, next) => {
           failureRedirect: '/'
       }
   )
+
+  exports.log_out_get = (req, res, next) => {
+      req.logout();
+      res.redirect('/');
+  }

@@ -9,8 +9,12 @@ html
         a(href="/") Home 
       div.nav_links 
         ul 
-          li 
-            a(href="/sign-up") Sign up 
-          li 
-            a(href="/sign-in") Sign in 
+          if !currentUser
+            li 
+              a(href="/sign-up") Sign up
+            li 
+              a(href="/sign-in") Sign in
+          else 
+            li 
+              a(href="/log-out") Log Out
     block content

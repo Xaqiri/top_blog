@@ -14,4 +14,6 @@ router.post('/sign-up', indexController.sign_up_post);
 router.get('/sign-in', indexController.sign_in_get);
 router.post('/sign-in', indexController.sign_in_post);
 
+router.get('/log-out', indexController.log_out_get);
+
 module.exports = router;
