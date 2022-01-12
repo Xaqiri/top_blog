@@ -1,0 +1,10 @@
+extends layout 
+
+block content 
+    h1 Create a new profile 
+    form(action="", method="POST")
+        label(for="username") Username: 
+        input(type="text" name="username" required="true")
+        label(for="password") Password: 
+        input(type="password" name="password" required="true")
+        button(type="submit") Submit

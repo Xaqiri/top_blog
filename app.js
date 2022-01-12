@@ -1,11 +1,22 @@
+require('dotenv').config()
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+const mongoose = require('mongoose');
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const User = require('./models/user');
+
+const mongoDB = process.env.DB_URI;
+mongoose.connect(mongoDB, { useUnifiedTopology: true, useNewUrlParser: true });
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, "db connection error"));
 
 var app = express();
 
@@ -18,6 +29,41 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
+passport.use(
+  new LocalStrategy((username, password, done) => {
+    User.findOne({username: username}, (err, user) => {
+      if (err) {
+        return done(err);
+      }
+      if (!user) {
+        return done(null, false, { message: "Incorrect Username" })
+      }
+      bcrypt.compare(password, user.password, (err, res) => {
+        if (res) return done(null, user)
+        else return done(null, false, { message: "Incorrect password" })
+      })
+    })
+  })
+)
+
+passport.serializeUser((user, done) => {
+  return done(null, user.id);
+})
+
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
+    return done(err, user);
+  })
+})
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.urlencoded({ extended: false }));
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+})
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
