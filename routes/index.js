@@ -7,6 +7,8 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Blog' });
 });
 
+router.get('/api', indexController.get_users);
+
 router.get('/sign-up', indexController.sign_up_get);
 
 router.post('/sign-up', indexController.sign_up_post);

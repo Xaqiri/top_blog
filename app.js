@@ -12,6 +12,7 @@ const bcrypt = require('bcryptjs');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const User = require('./models/user');
+const cors = require('cors');
 
 const mongoDB = process.env.DB_URI;
 mongoose.connect(mongoDB, { useUnifiedTopology: true, useNewUrlParser: true });
@@ -19,6 +20,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, "db connection error"));
 
 var app = express();
+app.options('*', cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

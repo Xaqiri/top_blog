@@ -2,6 +2,16 @@ const User = require('../models/user');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 
+exports.get_users = async (req, res, next) => {
+    User.find()
+    .exec((err, users) => {
+        if (err) return next(err);
+        else {
+            res.json(users);
+        }
+    })
+}
+
 exports.sign_up_get = (req, res, next) => {
     res.render('sign_up')
 }
